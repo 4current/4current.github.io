@@ -1,0 +1,12 @@
+# Site settings
+title: Four Current
+email: rich.morrisey@gmail.com
+description: > # this means to ignore newlines until "baseurl:"
+  These are the GH Pages for 4current on github. 
+baseurl: "" # the subpath of your site, e.g. /blog/
+url: "http://4current.github.io" # the base hostname & protocol for your site
+twitter_username: divcurl
+github_username:  4current
+
+# Build settings
+markdown: kramdown
