@@ -1,0 +1,80 @@
+---
+layout: post
+title:  "Doing Hadoop"
+date:   2015-03-26 
+categories: Big Data
+---
+
+### Installing a standalone version of Hadoop
+
+1. get it
+
+{% highlight sh %}
+
+yum install wget
+sudo yum install java-1.7.0-jdk icedtea-web
+wget http://mirror.olnevhost.net/pub/apache/hadoop/common/current/hadoop-2.6.0.tar.gz
+tar xzf hadoop-2.6.0.tar.gz
+cd hadoop-2.6.0
+vi etc/hadoop/hadoop-env.sh
+
+# set to the root of your Java installation
+export JAVA_HOME=/usr
+
+# Assuming your installation directory is /usr/local/hadoop
+export HADOOP_PREFIX=/home/ec2-user/hadoop-2.6.0
+
+bin/hadoop
+
+mkdir input
+cp etc/hadoop/*.xml input
+bin/hadoop jar share/hadoop/mapreduce/hadoop-mapreduce-examples-2.6.0.jar grep input output 'dfs[a-z.]+'
+cat output/*
+
+vi etc/hadoop/core-site.xml
+
+
+<configuration>
+    <property>
+        <name>fs.defaultFS</name>
+        <value>hdfs://localhost:9000</value>
+    </property>
+</configuration>
+
+vi etc/hadoop/hdfs-site.xml
+
+<configuration>
+    <property>
+        <name>dfs.replication</name>
+        <value>1</value>
+    </property>
+</configuration>
+
+ssh localhost
+ssh-keygen -t dsa -P '' -f ~/.ssh/id_dsa
+cat ~/.ssh/id_dsa.pub >> ~/.ssh/authorized_keys
+
+ssh localhost
+bin/hdfs namenode -format
+
+cd hadoop-2.6.0
+sbin/start-dfs.sh
+
+tail -f /home/ec2-user/hadoop-2.6.0/logs/hadoop-ec2-user-secondarynamenode-ip-172-31-58-199.ec2.internal.out
+sudo service iptables stop
+
+wget NameNode - http://localhost:50070
+vi index.html
+
+
+bin/hdfs dfs -mkdir /user/ec2-user
+bin/hdfs dfs -put etc/hadoop input
+bin/hadoop jar share/hadoop/mapreduce/hadoop-mapreduce-examples-2.6.0.jar grep input output 'dfs[a-z.]+'
+bin/hdfs dfs -get output output
+cat output/*
+
+bin/hdfs dfs -cat output/*
+sbin/stop-dfs.sh
+sudo halt
+
+{% endhighlight %}
